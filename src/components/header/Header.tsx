@@ -2,6 +2,20 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 // import NavDropdown from "react-bootstrap/NavDropdown";
+import { createLink, LinkComponent } from "@tanstack/react-router";
+import { NavLinkProps } from "react-bootstrap";
+import React from "react";
+
+interface BSLinkProps extends Omit<NavLinkProps, "href"> {}
+
+const BSLinkComponent = React.forwardRef<HTMLAnchorElement, BSLinkProps>(
+  (props, ref) => {
+    return <Nav.Link ref={ref} {...props} />;
+  }
+);
+
+const CreatedLinkComponent: LinkComponent<typeof BSLinkComponent> =
+  createLink(BSLinkComponent);
 
 function Header() {
   return (
@@ -12,8 +26,10 @@ function Header() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#text-sanitizer">Text Sanitizer</Nav.Link>
+              <CreatedLinkComponent to="/home">Home</CreatedLinkComponent>
+              <CreatedLinkComponent to="/Text-sanitizer">
+                Text Sanitizer
+              </CreatedLinkComponent>
               {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">

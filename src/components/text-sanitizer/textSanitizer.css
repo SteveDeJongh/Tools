@@ -1,0 +1,13 @@
+.switch-container {
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: space-between; */
+}
+
+.switch-container > div {
+  padding: 0 20px;
+}
+
+#results {
+  white-space: pre-wrap;
+}

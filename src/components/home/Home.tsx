@@ -12,7 +12,8 @@ function Home() {
       <hr className="my-4" />
       <p>
         It uses utility classesfor typography and spacing to space content out
-        within the larger container.
+        within the larger container. Project uses: React, TypeScript, Vite,
+        Bootstrap, TanStack Router, React-Hook-Form
       </p>
       <a className="btn btn-primary btn-lg" href="#" role="button">
         Learn more

@@ -1,7 +1,7 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Home } from "./components/home/Home";
-import { Header } from "./components/header/Header";
+import { Home } from "./components/home/home";
+import { Header } from "./components/header/header";
 import { Tools } from "./components/tools/tools";
 
 function App() {
