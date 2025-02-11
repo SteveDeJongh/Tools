@@ -1,4 +1,3 @@
-import React from "react";
 import { Home } from "../home/home";
 import { Tools } from "../tools/tools";
 
