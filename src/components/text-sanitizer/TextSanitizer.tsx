@@ -42,6 +42,8 @@ const SIZES = [
   "58 ",
 ];
 
+let outputText: string;
+
 function returnText(data: TTextSanitizerForm) {
   const splitText = data.text.split("\n\n");
   const bikes = splitText[2].split("\n");
@@ -57,6 +59,8 @@ function returnText(data: TTextSanitizerForm) {
     termsMessage,
     freightEligible
   );
+
+  outputText = text.join("\n");
 
   return text.join("\n");
 }
@@ -133,6 +137,10 @@ function cleanBikeLines(lines: string[], size: boolean, year: boolean) {
   });
 }
 
+function copyText() {
+  navigator.clipboard.writeText(outputText);
+}
+
 function TextSanitizer() {
   const {
     register,
@@ -141,7 +149,7 @@ function TextSanitizer() {
     watch,
   } = useForm<TTextSanitizerForm>();
 
-  const productSelection = watch("type");
+  const productSelection = watch("type", "bike");
 
   function onSubmit(data: TTextSanitizerForm) {
     const text = returnText(data);
@@ -155,9 +163,12 @@ function TextSanitizer() {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group className="mb-3" controlId="formTextInput">
           <Form.Label>Mail Delivery Bikes Report Sanitizer</Form.Label>
-          <Form.Control
+          <Form.Text
+            className="w-100"
+            style={{ height: "100px" }}
             as="textarea"
             placeholder="Input report here..."
+            id="inputText"
             {...register("text", {
               required: "IConnect Report text is required",
             })}
@@ -165,6 +176,14 @@ function TextSanitizer() {
           {errors.text && (
             <Form.Text className="text-danger">{errors.text.message}</Form.Text>
           )}
+          <Button
+            type="button"
+            onClick={() => {
+              document.getElementById("inputText").value = "";
+            }}
+          >
+            Clear text
+          </Button>
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Bike or Component Shipment?</Form.Label>
@@ -193,7 +212,6 @@ function TextSanitizer() {
                   <div key={`default-${term.name}`} className="mb-3">
                     <Form.Check
                       type={"switch"}
-                      // id={term.name}
                       label={term.name}
                       defaultChecked={term.enabled}
                       {...register(
@@ -212,7 +230,6 @@ function TextSanitizer() {
                   <div key={`default-${term.name}`} className="mb-3">
                     <Form.Check
                       type={"switch"}
-                      // id={term.name}
                       label={term.name}
                       defaultChecked={term.enabled}
                       {...register(
@@ -243,7 +260,7 @@ function TextSanitizer() {
           ></Form.Check>
           <Form.Check
             type="checkbox"
-            id="checkFreigth"
+            id="checkFreight"
             label="Check Freight Eligibility?"
             defaultChecked={true}
             disabled={productSelection === "component"}
@@ -257,8 +274,9 @@ function TextSanitizer() {
       </Form>
 
       <div className="result-div">
-        <p>Results go here</p>
-        <p id="results"></p>
+        <h2>Results</h2>
+        <p id="results" className="container border"></p>
+        <Button onClick={() => copyText()}>Copy to Clipboard</Button>
       </div>
     </div>
   );
