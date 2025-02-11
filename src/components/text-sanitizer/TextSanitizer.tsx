@@ -1,19 +1,8 @@
-import React from "react";
 import "./textSanitizer.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useForm, SubmitHandler } from "react-hook-form";
-
-type Inputs = {
-  text: string;
-  N30: boolean;
-  "30/60/90": boolean;
-  Spring: boolean;
-  removeyear: boolean;
-  removesize: boolean;
-  checkfreight: boolean;
-  type: "bike" | "component";
-};
+import { useForm } from "react-hook-form";
+import { TTextSanitizerForm } from "./TextSanitizerTypes";
 
 type PaymentTerm = {
   name: string;
@@ -21,17 +10,19 @@ type PaymentTerm = {
   enabled: boolean;
 };
 
+const SHIPMESSAGE = "Available to ship: ";
+
 const BIKETERMS: PaymentTerm[] = [
-  { name: "Spring", min: 10000, enabled: false },
-  { name: "30/60/90", min: 5000, enabled: true },
   { name: "N30", min: 0, enabled: true },
+  { name: "30/60/90", min: 5000, enabled: true },
+  { name: "Spring", min: 10000, enabled: false },
 ];
 
-// const COMPONENTTERMS: PaymentTerm[] = [
-//   { name: "N30", min: 0, enabled: true },
-//   { name: "N60", min: 500, enabled: true },
-//   { name: "N90", min: 1000, enabled: true },
-// ];
+const COMPONENTTERMS: PaymentTerm[] = [
+  { name: "N30", min: 0, enabled: true },
+  { name: "N60", min: 500, enabled: true },
+  { name: "N90", min: 1000, enabled: true },
+];
 
 const YEARS = Array(10)
   .fill(2018)
@@ -51,66 +42,82 @@ const SIZES = [
   "58 ",
 ];
 
-function returnText(data) {
-  let t = data.text.split("\n\n");
-  let bikes = t[2].split("\n");
-  let cleanLines = cleanBikeLines(bikes, data.removesize, data.removeyear);
-  let { total, bikeQty } = orderTotals(data, t[3].split("\n"));
-  let terms = determineTerms(data, total);
-  let freightEligible = determineFreight(data, bikeQty);
-  console.log(cleanLines, total, bikeQty, terms, freightEligible);
-  let text = formatOutputText(
+function returnText(data: TTextSanitizerForm) {
+  const splitText = data.text.split("\n\n");
+  const bikes = splitText[2].split("\n");
+  const cleanLines = cleanBikeLines(bikes, data.removesize, data.removeyear);
+  const totalLines = splitText[3].split("\n");
+  const { total, bikeQty } = orderTotals(totalLines[2], totalLines[4]);
+  const termsMessage = determineTermsMessage(data, total);
+  const freightEligible = determineFreight(data, bikeQty);
+  const text = formatOutputText(
     cleanLines,
     total,
     bikeQty,
-    terms,
+    termsMessage,
     freightEligible
   );
 
-  return text.join("\n\n");
+  return text.join("\n");
 }
 
-function formatOutputText(cleanLines, total, bikeQty, terms, freightEligible) {
-  let textLines = [];
-  textLines.push("Available to ship: ");
-  cleanLines.forEach((line) => {
-    textLines.push(line);
+function formatOutputText(
+  cleanLines: string[],
+  total: number,
+  bikeQty: number,
+  terms: string,
+  freightEligible: string
+) {
+  const textLines: string[] = [];
+  textLines.push(`${SHIPMESSAGE}\n`);
+
+  cleanLines.forEach((line: string, idx: number) => {
+    if (idx === cleanLines.length - 1) {
+      textLines.push(line.concat("\n"));
+    } else {
+      textLines.push(line);
+    }
   });
 
-  let summaryLine = `${bikeQty} ${bikeQty >= 2 ? "pieces" : "piece"} for ${total} ${terms} ${freightEligible}`;
+  const summaryLine = `${bikeQty} ${bikeQty >= 2 ? "pieces" : "piece"} for ${total} ${terms} ${freightEligible}`;
 
   textLines.push(summaryLine);
   return textLines;
 }
 
-function determineFreight(data, qty) {
+function determineFreight(data: TTextSanitizerForm, qty: number) {
   if (data.checkfreight) {
     return qty >= 6 ? "and eligible for freight rebate." : "";
   }
   return "";
 }
 
-function determineTerms(data, total) {
+function determineTermsMessage(data: TTextSanitizerForm, total: number) {
   let msg = "";
-  BIKETERMS.some((term) => {
-    if (data[term.name]) {
-      console.log("term is allowed", term.name);
+  const isbike = data.type === "bike";
+  const sortedTerms = isbike
+    ? BIKETERMS.toSorted((a, b) => b.min - a.min)
+    : COMPONENTTERMS.toSorted((a, b) => b.min - a.min);
+
+  sortedTerms.some((term: PaymentTerm) => {
+    if (data[`${isbike ? "bikeTerms" : "componentTerms"}`][term.name]) {
       if (total >= term.min) {
         msg = `on ${term.name} terms`;
         return total >= term.min;
       }
     }
   });
+
   return msg;
 }
 
-function orderTotals(data, totalLines) {
-  const total = parseFloat(totalLines[2].match(/[+-]?\d+(\.\d+)?/g)[0]);
-  const bikeQty = parseFloat(totalLines[4].match(/\d+(\.\d+)?/)[0]);
+function orderTotals(totalLine: string, bikeQtyLine: string) {
+  const total = parseFloat(totalLine.match(/[+-]?\d+(\.\d+)?/g)![0]);
+  const bikeQty = parseFloat(bikeQtyLine.match(/\d+(\.\d+)?/)![0]);
   return { total, bikeQty };
 }
 
-function cleanBikeLines(lines, size, year) {
+function cleanBikeLines(lines: string[], size: boolean, year: boolean) {
   return lines.map((line) => {
     let newLine = line;
     if (year) {
@@ -121,29 +128,33 @@ function cleanBikeLines(lines, size, year) {
       const sizeRexp = new RegExp(SIZES.join("|"));
       newLine = newLine.replace(sizeRexp, "");
     }
+
     return newLine;
   });
 }
 
-export const TextSanitizer = () => {
+function TextSanitizer() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+    watch,
+  } = useForm<TTextSanitizerForm>();
 
-  function onSubmit<SubmitHandler>(data) {
-    console.log("Submitting!", data);
+  const productSelection = watch("type");
+
+  function onSubmit(data: TTextSanitizerForm) {
     const text = returnText(data);
-    let resultArea = document.getElementById("results");
+    const resultArea = document.getElementById(
+      "results"
+    ) as HTMLParagraphElement;
     resultArea.textContent = text;
-    console.log(resultArea);
   }
   return (
     <div className="container">
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group className="mb-3" controlId="formTextInput">
-          <Form.Label>Mail Delivery Bikes Text Sanitizer</Form.Label>
+          <Form.Label>Mail Delivery Bikes Report Sanitizer</Form.Label>
           <Form.Control
             as="textarea"
             placeholder="Input report here..."
@@ -161,7 +172,6 @@ export const TextSanitizer = () => {
             type="radio"
             label="Bike"
             id="bike"
-            // name="type"
             value={"bike"}
             defaultChecked={true}
             {...register("type")}
@@ -170,43 +180,51 @@ export const TextSanitizer = () => {
             type="radio"
             label="Component"
             id="component"
-            // name="type"
             value={"component"}
             {...register("type")}
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Bike Shipment Terms</Form.Label>
-          <div className="switch-container">
-            {BIKETERMS.map((term) => (
-              <div key={`default-${term.name}`} className="mb-3">
-                <Form.Check
-                  type={"switch"}
-                  // id={term.name}
-                  label={term.name}
-                  defaultChecked={term.enabled}
-                  {...register(`${term.name}` as keyof Inputs)}
-                />
+          {productSelection === "bike" ? (
+            <>
+              <Form.Label>Bike Shipment Terms</Form.Label>
+              <div className="switch-container">
+                {BIKETERMS.map((term) => (
+                  <div key={`default-${term.name}`} className="mb-3">
+                    <Form.Check
+                      type={"switch"}
+                      // id={term.name}
+                      label={term.name}
+                      defaultChecked={term.enabled}
+                      {...register(
+                        `bikeTerms.${term.name}` as keyof TTextSanitizerForm
+                      )}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          ) : (
+            <>
+              <Form.Label>Component Shipment Terms</Form.Label>
+              <div className="switch-container">
+                {COMPONENTTERMS.map((term) => (
+                  <div key={`default-${term.name}`} className="mb-3">
+                    <Form.Check
+                      type={"switch"}
+                      // id={term.name}
+                      label={term.name}
+                      defaultChecked={term.enabled}
+                      {...register(
+                        `componentTerms.${term.name}` as keyof TTextSanitizerForm
+                      )}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </Form.Group>
-        {/* <Form.Group className="mb-3">
-          <Form.Label>Component Shipment Terms</Form.Label>
-          <div className="switch-container">
-            {COMPONENTTERMS.map((term) => (
-              <div key={`default-${term.name}`} className="mb-3">
-                <Form.Check
-                  type={"switch"}
-                  id={term.name}
-                  label={term.name}
-                  checked={term.enabled}
-                />
-              </div>
-            ))}
-          </div>
-        </Form.Group> */}
-
         <Form.Group className="mb-5">
           <Form.Check
             type="checkbox"
@@ -220,6 +238,7 @@ export const TextSanitizer = () => {
             id="removesize"
             label="Remove double size?"
             defaultChecked={true}
+            disabled={productSelection === "component"}
             {...register("removesize")}
           ></Form.Check>
           <Form.Check
@@ -227,28 +246,22 @@ export const TextSanitizer = () => {
             id="checkFreigth"
             label="Check Freight Eligibility?"
             defaultChecked={true}
+            disabled={productSelection === "component"}
             {...register("checkfreight")}
           ></Form.Check>
         </Form.Group>
-
-        {/* <Form.Group className="mb-3">
-          <Form.Control type="submit"></Form.Control>
-        </Form.Group> */}
 
         <Button variant="primary" type="submit">
           Submit
         </Button>
       </Form>
 
-      {/* <div className="div">
-        Placeholder
-        {YEARS}
-        {SIZES}
-      </div> */}
       <div className="result-div">
         <p>Results go here</p>
         <p id="results"></p>
       </div>
     </div>
   );
-};
+}
+
+export { TextSanitizer };
