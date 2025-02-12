@@ -23,5 +23,8 @@ const ZTextSanitizerForm = z.object({
 })
 
 type TTextSanitizerForm = z.infer<typeof ZTextSanitizerForm>
+type TBikeTerms = z.infer<typeof ZBikeTerms>
+type TComponentTerms = z.infer<typeof ZComponentTerms>
 
-export { ZTextSanitizerForm, type TTextSanitizerForm }
+
+export { ZTextSanitizerForm, type TTextSanitizerForm, type TBikeTerms, type TComponentTerms }

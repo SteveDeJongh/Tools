@@ -6,8 +6,8 @@ import { TTextSanitizerForm } from "./TextSanitizerTypes";
 
 type PaymentTerm = {
   name: string;
-  min: number;
   enabled: boolean;
+  min: number;
 };
 
 const SHIPMESSAGE = "Available to ship: ";
@@ -23,10 +23,6 @@ const COMPONENTTERMS: PaymentTerm[] = [
   { name: "N60", min: 500, enabled: true },
   { name: "N90", min: 1000, enabled: true },
 ];
-
-const YEARS = Array(10)
-  .fill(2018)
-  .map((x, y) => x + y);
 
 const SIZES = [
   "XS ",
@@ -83,7 +79,7 @@ function formatOutputText(
     }
   });
 
-  const summaryLine = `${bikeQty} ${bikeQty >= 2 ? "pieces" : "piece"} for ${total} ${terms} ${freightEligible}`;
+  const summaryLine = `${bikeQty} ${bikeQty >= 2 ? "pieces" : "piece"} for $${total} ${terms} ${freightEligible}`;
 
   textLines.push(summaryLine);
   return textLines;
@@ -173,13 +169,32 @@ function TextSanitizer() {
               required: "IConnect Report text is required",
             })}
           />
+          {/* Dear 
+
+            Available Bikes:
+
+              8 x  36e Tanuki MD MD 2023 Blue
+              6 x  36e Tanuki MD MD 2023 Blue
+              9 x  36e Tanuki SM SM 2023 Blue
+
+
+            Before discount: $ 11181.91
+            After base discount: $ 10175.54
+            Lines: 3
+            Revised/order: 23 / 17
+
+            Have a great day,
+
+            Your Kona team */}
+
           {errors.text && (
             <Form.Text className="text-danger">{errors.text.message}</Form.Text>
           )}
           <Button
             type="button"
             onClick={() => {
-              document.getElementById("inputText").value = "";
+              (document.getElementById("inputText") as HTMLInputElement).value =
+                "";
             }}
           >
             Clear text

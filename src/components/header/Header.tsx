@@ -6,7 +6,9 @@ import { createLink, LinkComponent } from "@tanstack/react-router";
 import { NavLinkProps } from "react-bootstrap";
 import React from "react";
 
-interface BSLinkProps extends Omit<NavLinkProps, "href"> {}
+interface BSLinkProps extends Omit<NavLinkProps, "href"> {
+  opt?: string;
+}
 
 const BSLinkComponent = React.forwardRef<HTMLAnchorElement, BSLinkProps>(
   (props, ref) => {
@@ -22,12 +24,12 @@ function Header() {
     <div>
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="#home">Steve Tools</Navbar.Brand>
+          <Navbar.Brand href="/home">Steve Tools</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <CreatedLinkComponent to="/home">Home</CreatedLinkComponent>
-              <CreatedLinkComponent to="/Text-sanitizer">
+              <CreatedLinkComponent to="/text-sanitizer">
                 Text Sanitizer
               </CreatedLinkComponent>
               {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
