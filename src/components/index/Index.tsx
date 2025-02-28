@@ -1,11 +1,13 @@
-import { Home } from "../home/home";
-import { Tools } from "../tools/tools";
+import { Skills } from "../skills/Skills";
+import { Jumbo } from "../jumbo/Jumbo";
+import { Projects } from "../projects/Projects";
 
 export const Index = () => {
   return (
     <>
-      <Home />
-      <Tools />
+      <Jumbo />
+      <Skills />
+      <Projects />
     </>
   );
 };

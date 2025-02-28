@@ -155,21 +155,27 @@ function TextSanitizer() {
     resultArea.textContent = text;
   }
   return (
-    <div className="container">
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Form.Group className="mb-3" controlId="formTextInput">
-          <Form.Label>Mail Delivery Bikes Report Sanitizer</Form.Label>
-          <Form.Text
-            className="w-100"
-            style={{ height: "100px" }}
-            as="textarea"
-            placeholder="Input report here..."
-            id="inputText"
-            {...register("text", {
-              required: "IConnect Report text is required",
-            })}
-          />
-          {/* Dear 
+    <>
+      <div className="container">
+        <p>Text blurb about tool to do ...</p>
+      </div>
+      <div className="container">
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form.Group className="mb-3" controlId="formTextInput">
+            <Form.Label>
+              <h2>Mail Delivery Bikes Report Sanitizer</h2>
+            </Form.Label>
+            <Form.Text
+              className="w-100"
+              style={{ height: "100px" }}
+              as="textarea"
+              placeholder="Input report here..."
+              id="inputText"
+              {...register("text", {
+                required: "IConnect Report text is required",
+              })}
+            />
+            {/* Dear 
 
             Available Bikes:
 
@@ -187,113 +193,117 @@ function TextSanitizer() {
 
             Your Kona team */}
 
-          {errors.text && (
-            <Form.Text className="text-danger">{errors.text.message}</Form.Text>
-          )}
-          <Button
-            type="button"
-            onClick={() => {
-              (document.getElementById("inputText") as HTMLInputElement).value =
-                "";
-            }}
-          >
-            Clear text
+            {errors.text && (
+              <Form.Text className="text-danger">
+                {errors.text.message}
+              </Form.Text>
+            )}
+            <Button
+              type="button"
+              onClick={() => {
+                (
+                  document.getElementById("inputText") as HTMLInputElement
+                ).value = "";
+              }}
+            >
+              Clear text
+            </Button>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Bike or Component Shipment?</Form.Label>
+            <Form.Check
+              type="radio"
+              label="Bike"
+              id="bike"
+              value={"bike"}
+              defaultChecked={true}
+              {...register("type")}
+            />
+            <Form.Check
+              type="radio"
+              label="Component"
+              id="component"
+              value={"component"}
+              {...register("type")}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            {productSelection === "bike" ? (
+              <>
+                <Form.Label>Bike Shipment Terms</Form.Label>
+                <div className="switch-container">
+                  {BIKETERMS.map((term) => (
+                    <div key={`default-${term.name}`} className="mb-3">
+                      <Form.Check
+                        type={"switch"}
+                        label={term.name}
+                        defaultChecked={term.enabled}
+                        {...register(
+                          `bikeTerms.${term.name}` as keyof TTextSanitizerForm
+                        )}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <Form.Label>Component Shipment Terms</Form.Label>
+                <div className="switch-container">
+                  {COMPONENTTERMS.map((term) => (
+                    <div key={`default-${term.name}`} className="mb-3">
+                      <Form.Check
+                        type={"switch"}
+                        label={term.name}
+                        defaultChecked={term.enabled}
+                        {...register(
+                          `componentTerms.${term.name}` as keyof TTextSanitizerForm
+                        )}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </Form.Group>
+          <Form.Group className="mb-5">
+            <Form.Check
+              type="checkbox"
+              id="removeyear"
+              label="Remove year?"
+              defaultChecked={true}
+              {...register("removeyear")}
+            ></Form.Check>
+            <Form.Check
+              type="checkbox"
+              id="removesize"
+              label="Remove double size?"
+              defaultChecked={true}
+              disabled={productSelection === "component"}
+              {...register("removesize")}
+            ></Form.Check>
+            <Form.Check
+              type="checkbox"
+              id="checkFreight"
+              label="Check Freight Eligibility?"
+              defaultChecked={true}
+              disabled={productSelection === "component"}
+              {...register("checkfreight")}
+            ></Form.Check>
+          </Form.Group>
+
+          <Button variant="primary" type="submit">
+            Submit
           </Button>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Bike or Component Shipment?</Form.Label>
-          <Form.Check
-            type="radio"
-            label="Bike"
-            id="bike"
-            value={"bike"}
-            defaultChecked={true}
-            {...register("type")}
-          />
-          <Form.Check
-            type="radio"
-            label="Component"
-            id="component"
-            value={"component"}
-            {...register("type")}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          {productSelection === "bike" ? (
-            <>
-              <Form.Label>Bike Shipment Terms</Form.Label>
-              <div className="switch-container">
-                {BIKETERMS.map((term) => (
-                  <div key={`default-${term.name}`} className="mb-3">
-                    <Form.Check
-                      type={"switch"}
-                      label={term.name}
-                      defaultChecked={term.enabled}
-                      {...register(
-                        `bikeTerms.${term.name}` as keyof TTextSanitizerForm
-                      )}
-                    />
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <>
-              <Form.Label>Component Shipment Terms</Form.Label>
-              <div className="switch-container">
-                {COMPONENTTERMS.map((term) => (
-                  <div key={`default-${term.name}`} className="mb-3">
-                    <Form.Check
-                      type={"switch"}
-                      label={term.name}
-                      defaultChecked={term.enabled}
-                      {...register(
-                        `componentTerms.${term.name}` as keyof TTextSanitizerForm
-                      )}
-                    />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </Form.Group>
-        <Form.Group className="mb-5">
-          <Form.Check
-            type="checkbox"
-            id="removeyear"
-            label="Remove year?"
-            defaultChecked={true}
-            {...register("removeyear")}
-          ></Form.Check>
-          <Form.Check
-            type="checkbox"
-            id="removesize"
-            label="Remove double size?"
-            defaultChecked={true}
-            disabled={productSelection === "component"}
-            {...register("removesize")}
-          ></Form.Check>
-          <Form.Check
-            type="checkbox"
-            id="checkFreight"
-            label="Check Freight Eligibility?"
-            defaultChecked={true}
-            disabled={productSelection === "component"}
-            {...register("checkfreight")}
-          ></Form.Check>
-        </Form.Group>
+        </Form>
 
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-      </Form>
-
-      <div className="result-div">
-        <h2>Results</h2>
-        <p id="results" className="container border"></p>
-        <Button onClick={() => copyText()}>Copy to Clipboard</Button>
+        <div className="result-div">
+          <h2>Results</h2>
+          <p id="results" className="container border"></p>
+          <Button onClick={() => copyText()}>Copy to Clipboard</Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

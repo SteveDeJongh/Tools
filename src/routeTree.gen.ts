@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as TextSanitizerImport } from './routes/text-sanitizer'
 import { Route as HomeImport } from './routes/home'
+import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
@@ -26,6 +27,12 @@ const TextSanitizerRoute = TextSanitizerImport.update({
 const HomeRoute = HomeImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AboutRoute = AboutImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -44,6 +51,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
     '/home': {
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/home': typeof HomeRoute
   '/text-sanitizer': typeof TextSanitizerRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/home': typeof HomeRoute
   '/text-sanitizer': typeof TextSanitizerRoute
 }
@@ -80,27 +96,30 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/home': typeof HomeRoute
   '/text-sanitizer': typeof TextSanitizerRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/text-sanitizer'
+  fullPaths: '/' | '/about' | '/home' | '/text-sanitizer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/text-sanitizer'
-  id: '__root__' | '/' | '/home' | '/text-sanitizer'
+  to: '/' | '/about' | '/home' | '/text-sanitizer'
+  id: '__root__' | '/' | '/about' | '/home' | '/text-sanitizer'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   HomeRoute: typeof HomeRoute
   TextSanitizerRoute: typeof TextSanitizerRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   HomeRoute: HomeRoute,
   TextSanitizerRoute: TextSanitizerRoute,
 }
@@ -116,12 +135,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/about",
         "/home",
         "/text-sanitizer"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/about": {
+      "filePath": "about.tsx"
     },
     "/home": {
       "filePath": "home.tsx"
