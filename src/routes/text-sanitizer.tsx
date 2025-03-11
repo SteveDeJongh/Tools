@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TextSanitizer } from "../components/text-sanitizer/TextSanitizer";
+import { ProjectShowCaseTS } from "../components/projects/ProjectShowCaseTS";
 
 export const Route = createFileRoute("/text-sanitizer")({
-  component: TextSanitizer,
+  component: ProjectShowCaseTS,
 });

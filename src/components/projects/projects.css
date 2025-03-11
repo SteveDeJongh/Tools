@@ -3,3 +3,7 @@
   flex-wrap: wrap;
   justify-content: space-evenly;
 } */
+
+.limited {
+  max-width: 359px;
+}

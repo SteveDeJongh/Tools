@@ -11,12 +11,27 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as WorkorderImport } from './routes/workorder'
+import { Route as TextSanitizerLiveImport } from './routes/text-sanitizer-live'
 import { Route as TextSanitizerImport } from './routes/text-sanitizer'
 import { Route as HomeImport } from './routes/home'
+import { Route as ContactManagerImport } from './routes/contact-manager'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const WorkorderRoute = WorkorderImport.update({
+  id: '/workorder',
+  path: '/workorder',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TextSanitizerLiveRoute = TextSanitizerLiveImport.update({
+  id: '/text-sanitizer-live',
+  path: '/text-sanitizer-live',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const TextSanitizerRoute = TextSanitizerImport.update({
   id: '/text-sanitizer',
@@ -27,6 +42,12 @@ const TextSanitizerRoute = TextSanitizerImport.update({
 const HomeRoute = HomeImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ContactManagerRoute = ContactManagerImport.update({
+  id: '/contact-manager',
+  path: '/contact-manager',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -60,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/contact-manager': {
+      id: '/contact-manager'
+      path: '/contact-manager'
+      fullPath: '/contact-manager'
+      preLoaderRoute: typeof ContactManagerImport
+      parentRoute: typeof rootRoute
+    }
     '/home': {
       id: '/home'
       path: '/home'
@@ -74,6 +102,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TextSanitizerImport
       parentRoute: typeof rootRoute
     }
+    '/text-sanitizer-live': {
+      id: '/text-sanitizer-live'
+      path: '/text-sanitizer-live'
+      fullPath: '/text-sanitizer-live'
+      preLoaderRoute: typeof TextSanitizerLiveImport
+      parentRoute: typeof rootRoute
+    }
+    '/workorder': {
+      id: '/workorder'
+      path: '/workorder'
+      fullPath: '/workorder'
+      preLoaderRoute: typeof WorkorderImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -82,46 +124,83 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact-manager': typeof ContactManagerRoute
   '/home': typeof HomeRoute
   '/text-sanitizer': typeof TextSanitizerRoute
+  '/text-sanitizer-live': typeof TextSanitizerLiveRoute
+  '/workorder': typeof WorkorderRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact-manager': typeof ContactManagerRoute
   '/home': typeof HomeRoute
   '/text-sanitizer': typeof TextSanitizerRoute
+  '/text-sanitizer-live': typeof TextSanitizerLiveRoute
+  '/workorder': typeof WorkorderRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact-manager': typeof ContactManagerRoute
   '/home': typeof HomeRoute
   '/text-sanitizer': typeof TextSanitizerRoute
+  '/text-sanitizer-live': typeof TextSanitizerLiveRoute
+  '/workorder': typeof WorkorderRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/home' | '/text-sanitizer'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact-manager'
+    | '/home'
+    | '/text-sanitizer'
+    | '/text-sanitizer-live'
+    | '/workorder'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/home' | '/text-sanitizer'
-  id: '__root__' | '/' | '/about' | '/home' | '/text-sanitizer'
+  to:
+    | '/'
+    | '/about'
+    | '/contact-manager'
+    | '/home'
+    | '/text-sanitizer'
+    | '/text-sanitizer-live'
+    | '/workorder'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact-manager'
+    | '/home'
+    | '/text-sanitizer'
+    | '/text-sanitizer-live'
+    | '/workorder'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ContactManagerRoute: typeof ContactManagerRoute
   HomeRoute: typeof HomeRoute
   TextSanitizerRoute: typeof TextSanitizerRoute
+  TextSanitizerLiveRoute: typeof TextSanitizerLiveRoute
+  WorkorderRoute: typeof WorkorderRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ContactManagerRoute: ContactManagerRoute,
   HomeRoute: HomeRoute,
   TextSanitizerRoute: TextSanitizerRoute,
+  TextSanitizerLiveRoute: TextSanitizerLiveRoute,
+  WorkorderRoute: WorkorderRoute,
 }
 
 export const routeTree = rootRoute
@@ -136,8 +215,11 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/contact-manager",
         "/home",
-        "/text-sanitizer"
+        "/text-sanitizer",
+        "/text-sanitizer-live",
+        "/workorder"
       ]
     },
     "/": {
@@ -146,11 +228,20 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
+    "/contact-manager": {
+      "filePath": "contact-manager.tsx"
+    },
     "/home": {
       "filePath": "home.tsx"
     },
     "/text-sanitizer": {
       "filePath": "text-sanitizer.tsx"
+    },
+    "/text-sanitizer-live": {
+      "filePath": "text-sanitizer-live.tsx"
+    },
+    "/workorder": {
+      "filePath": "workorder.tsx"
     }
   }
 }

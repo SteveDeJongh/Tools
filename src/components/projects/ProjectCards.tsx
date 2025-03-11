@@ -5,23 +5,30 @@ import { Link } from "@tanstack/react-router";
 import { PROJECTS } from "../../assets/projectDetails";
 import { CardFooter, Col, Row } from "react-bootstrap";
 
-const Projects = () => {
+const ProjectCards = () => {
   return (
     <section id="projects">
       <Row>
         <Col>
           <div className="bg-light m-3 pl-3 rounded text-left">
             <h2>Projects</h2>
-          </div>{" "}
+          </div>
         </Col>
       </Row>
       <Row className="">
         <Col>
-          <Row sm={1} md={2} lg={3} className="g-3 m-3">
+          <Row
+            xs={1}
+            sm={1}
+            md={1}
+            lg={2}
+            xl={3}
+            className="g-3 m-3 justify-content-center"
+          >
             {PROJECTS.map((project) => {
               return (
-                <Col key={project.title}>
-                  <Card className="border-1 border-dark rounded h-100">
+                <Col key={project.title} className="">
+                  <Card className="border-1 border-dark rounded h-100 limited m-auto">
                     <Card.Body className="">
                       <Card.Img
                         variant="top"
@@ -36,7 +43,7 @@ const Projects = () => {
                             <span
                               key={tag}
                               className={
-                                "p-1 m-1 fs-xs bg-secondary text-white rounded"
+                                "p-1 m-1 fs-xs bg-dark text-white rounded"
                               }
                             >
                               {tag}
@@ -62,4 +69,4 @@ const Projects = () => {
   );
 };
 
-export { Projects };
+export { ProjectCards };

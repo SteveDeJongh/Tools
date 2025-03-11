@@ -29,9 +29,7 @@ function Header() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <CreatedLinkComponent to="/home">Home</CreatedLinkComponent>
-              <CreatedLinkComponent to="/text-sanitizer">
-                Text Sanitizer
-              </CreatedLinkComponent>
+              <CreatedLinkComponent to="/about">About</CreatedLinkComponent>
             </Nav>
           </Navbar.Collapse>
         </Container>
