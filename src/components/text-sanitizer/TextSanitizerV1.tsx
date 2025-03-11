@@ -2,11 +2,7 @@ import "./textSanitizer.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
-import {
-  TBikeTerms,
-  TComponentTerms,
-  TTextSanitizerForm,
-} from "./TextSanitizerTypes";
+import { TTextSanitizerForm } from "./TextSanitizerTypes";
 
 type PaymentTerm = {
   name: string;
@@ -44,15 +40,12 @@ const SIZES = [
 
 let outputText: string;
 
-const bikeRegexp = /Available Bikes:\s*(.*?)\s*(?=\n\n)/s;
-const totalRegexp = /After base discount:\s*\$\s*([\d,]+\.\d{2})/;
-const qtyRegexp = /Revised\/order: (\d*)/;
-
 function returnText(data: TTextSanitizerForm) {
-  const bikes = data.text.match(bikeRegexp)![1].split("\n");
+  const splitText = data.text.split("\n\n");
+  const bikes = splitText[2].split("\n");
   const cleanLines = cleanBikeLines(bikes, data.removesize, data.removeyear);
-  const total = parseFloat(data.text.match(totalRegexp)![1].trim());
-  const bikeQty = parseFloat(data.text.match(qtyRegexp)![1]);
+  const totalLines = splitText[3].split("\n");
+  const { total, bikeQty } = orderTotals(totalLines[2], totalLines[4]);
   const termsMessage = determineTermsMessage(data, total);
   const freightEligible = determineFreight(data, bikeQty);
   const text = formatOutputText(
@@ -62,7 +55,9 @@ function returnText(data: TTextSanitizerForm) {
     termsMessage,
     freightEligible
   );
+
   outputText = text.join("\n");
+
   return text.join("\n");
 }
 
@@ -105,19 +100,10 @@ function determineTermsMessage(data: TTextSanitizerForm, total: number) {
     : COMPONENTTERMS.toSorted((a, b) => b.min - a.min);
 
   sortedTerms.some((term: PaymentTerm) => {
-    if (isbike) {
-      if (data["bikeTerms"][term.name as keyof TBikeTerms]) {
-        if (total >= term.min) {
-          msg = `on ${term.name} terms`;
-          return total >= term.min;
-        }
-      } else {
-        if (data["componentTerms"][term.name as keyof TComponentTerms]) {
-          if (total >= term.min) {
-            msg = `on ${term.name} terms`;
-            return total >= term.min;
-          }
-        }
+    if (data[`${isbike ? "bikeTerms" : "componentTerms"}`][term.name]) {
+      if (total >= term.min) {
+        msg = `on ${term.name} terms`;
+        return total >= term.min;
       }
     }
   });
@@ -125,9 +111,15 @@ function determineTermsMessage(data: TTextSanitizerForm, total: number) {
   return msg;
 }
 
+function orderTotals(totalLine: string, bikeQtyLine: string) {
+  const total = parseFloat(totalLine.match(/[+-]?\d+(\.\d+)?/g)![0]);
+  const bikeQty = parseFloat(bikeQtyLine.match(/\d+(\.\d+)?/)![0]);
+  return { total, bikeQty };
+}
+
 function cleanBikeLines(lines: string[], size: boolean, year: boolean) {
   return lines.map((line) => {
-    let newLine = line.trim();
+    let newLine = line;
     if (year) {
       const yearRexp = /\s20\d{2}/;
       newLine = newLine.replace(yearRexp, "");

@@ -1,16 +1,16 @@
 import { z } from "zod";
 
-const ZBikeTerms = z.optional(z.object({
-  N30: z.boolean(),
+const ZBikeTerms = z.object({
+  "N30": z.boolean(),
   "30/60/90": z.boolean(),
-  Spring: z.boolean(),
-}))
+  "Spring": z.boolean(),
+})
 
-const ZComponentTerms = z.optional(z.object({
-  N30: z.boolean(),
-  N60: z.boolean(),
-  N90: z.boolean(),
-}))
+const ZComponentTerms = z.object({
+  "N30": z.boolean(),
+  "N60": z.boolean(),
+  "N90": z.boolean(),
+})
 
 const ZTextSanitizerForm = z.object({
   text: z.string(),

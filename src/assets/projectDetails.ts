@@ -34,7 +34,7 @@ const PROJECTS: Project[] = [
       "Bootstrap",
       "React-Bootstrap",
       "tanstack-router",
-      
+
     ],
     text: "A one stop shop to highlight all of my work and share some of my background.",
     description: "",
@@ -55,7 +55,7 @@ const PROJECTS: Project[] = [
     description: `The text sanitizer is a text processing App for turning work IConnect "Mail Deliverable Bikes" reports into ready to use email content. The goal of the project was to increase effeciency of a repetitive task.`,
     why: "A common repeatable task in my day to day workflow screemed for improvements to effeciency. Unable to directly modify the implementation of the generated report from our CRM software, I turned to manipulating the report itself. This report was being used to send lists of product that was available to ship from their orders. Common questions for these shipment were `What terms will I receive?` and `Does this qualify for a freight rebate?`, so in addition to cleaning the report of duplicated information, and I've implemented toggles to select currently offered terms, along with an optional check for freight eligibility. With the desired toggles selected, now simply copying and pasting in the generated report returns a ready for email list with all the necessary information.",
     stack: "The project runs on React, with all logic being implemented on the front end using TypeScript. I've used the React-hook-form library for the form handling, which enables watching the form inputs to correctly render which terms are avaible for each type of product.",
-    lessons: "This was a great first <i>real-use</i> project. A relatively straight forward project to sink my teeth into making something that actually helps me in my day to day work. <p class='mt-3'>Initially, the project handled text selection and fetching the relevant parts by splitting the report based on certain criteria. However, in the end I leant on using Regular expression matches to better identifiy start and end points of the needed text to better handle variances that were possible from the input text.</p>",
+    lessons: "This was a great first <i>real-use</i> project. A relatively straight forward project to sink my teeth into making something that actually helps me in my day to day work. <p class='mt-3'>Initially, the project handled text selection and fetching the relevant parts by splitting the report based on certain criteria. However, in the end I decided on switching to using Regular expression matchers to better identifiy start and end points of the required portions of text to better handle variances that were possible from the input text.</p>",
   },
   {
     title: "Contact Manager",
