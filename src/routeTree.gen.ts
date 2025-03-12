@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as WorkorderImport } from './routes/workorder'
 import { Route as TextSanitizerLiveImport } from './routes/text-sanitizer-live'
 import { Route as TextSanitizerImport } from './routes/text-sanitizer'
+import { Route as PortfolioImport } from './routes/portfolio'
 import { Route as HomeImport } from './routes/home'
 import { Route as ContactManagerImport } from './routes/contact-manager'
 import { Route as AboutImport } from './routes/about'
@@ -36,6 +37,12 @@ const TextSanitizerLiveRoute = TextSanitizerLiveImport.update({
 const TextSanitizerRoute = TextSanitizerImport.update({
   id: '/text-sanitizer',
   path: '/text-sanitizer',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PortfolioRoute = PortfolioImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeImport
       parentRoute: typeof rootRoute
     }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioImport
+      parentRoute: typeof rootRoute
+    }
     '/text-sanitizer': {
       id: '/text-sanitizer'
       path: '/text-sanitizer'
@@ -126,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact-manager': typeof ContactManagerRoute
   '/home': typeof HomeRoute
+  '/portfolio': typeof PortfolioRoute
   '/text-sanitizer': typeof TextSanitizerRoute
   '/text-sanitizer-live': typeof TextSanitizerLiveRoute
   '/workorder': typeof WorkorderRoute
@@ -136,6 +151,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact-manager': typeof ContactManagerRoute
   '/home': typeof HomeRoute
+  '/portfolio': typeof PortfolioRoute
   '/text-sanitizer': typeof TextSanitizerRoute
   '/text-sanitizer-live': typeof TextSanitizerLiveRoute
   '/workorder': typeof WorkorderRoute
@@ -147,6 +163,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact-manager': typeof ContactManagerRoute
   '/home': typeof HomeRoute
+  '/portfolio': typeof PortfolioRoute
   '/text-sanitizer': typeof TextSanitizerRoute
   '/text-sanitizer-live': typeof TextSanitizerLiveRoute
   '/workorder': typeof WorkorderRoute
@@ -159,6 +176,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact-manager'
     | '/home'
+    | '/portfolio'
     | '/text-sanitizer'
     | '/text-sanitizer-live'
     | '/workorder'
@@ -168,6 +186,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact-manager'
     | '/home'
+    | '/portfolio'
     | '/text-sanitizer'
     | '/text-sanitizer-live'
     | '/workorder'
@@ -177,6 +196,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact-manager'
     | '/home'
+    | '/portfolio'
     | '/text-sanitizer'
     | '/text-sanitizer-live'
     | '/workorder'
@@ -188,6 +208,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactManagerRoute: typeof ContactManagerRoute
   HomeRoute: typeof HomeRoute
+  PortfolioRoute: typeof PortfolioRoute
   TextSanitizerRoute: typeof TextSanitizerRoute
   TextSanitizerLiveRoute: typeof TextSanitizerLiveRoute
   WorkorderRoute: typeof WorkorderRoute
@@ -198,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactManagerRoute: ContactManagerRoute,
   HomeRoute: HomeRoute,
+  PortfolioRoute: PortfolioRoute,
   TextSanitizerRoute: TextSanitizerRoute,
   TextSanitizerLiveRoute: TextSanitizerLiveRoute,
   WorkorderRoute: WorkorderRoute,
@@ -217,6 +239,7 @@ export const routeTree = rootRoute
         "/about",
         "/contact-manager",
         "/home",
+        "/portfolio",
         "/text-sanitizer",
         "/text-sanitizer-live",
         "/workorder"
@@ -233,6 +256,9 @@ export const routeTree = rootRoute
     },
     "/home": {
       "filePath": "home.tsx"
+    },
+    "/portfolio": {
+      "filePath": "portfolio.tsx"
     },
     "/text-sanitizer": {
       "filePath": "text-sanitizer.tsx"

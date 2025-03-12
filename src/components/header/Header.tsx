@@ -1,7 +1,6 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-// import NavDropdown from "react-bootstrap/NavDropdown";
 import { createLink, LinkComponent } from "@tanstack/react-router";
 import { NavLinkProps } from "react-bootstrap";
 import React from "react";
@@ -30,6 +29,8 @@ function Header() {
             <Nav className="ms-auto">
               <CreatedLinkComponent to="/home">Home</CreatedLinkComponent>
               <CreatedLinkComponent to="/about">About</CreatedLinkComponent>
+              <Nav.Link href="/#projects">Projects</Nav.Link>
+              <Nav.Link href="/#contact">Contact Me</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -1,5 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { Card, Col, Row, Stack } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Stack from "react-bootstrap/Stack";
 import { Icons } from "./Icons";
 
 function Footer() {
@@ -27,18 +30,18 @@ function Footer() {
                       </Link>
                     </span>
                     <span>
-                      <Link className={"text-decoration-none"} to="/">
+                      <a className={"text-decoration-none"} href="/#projects">
                         Projects
-                      </Link>
+                      </a>
                     </span>
                   </Stack>
                 </Col>
                 <Col>
                   <Stack>
                     <span>
-                      <Link className={"text-decoration-none"} to="/">
+                      <a className={"text-decoration-none"} href="/#contact">
                         Contact me
-                      </Link>
+                      </a>
                     </span>
                   </Stack>
                 </Col>

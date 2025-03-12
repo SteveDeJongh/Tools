@@ -6,13 +6,8 @@ import {
   TBikeTerms,
   TComponentTerms,
   TTextSanitizerForm,
+  PaymentTerm,
 } from "./TextSanitizerTypes";
-
-type PaymentTerm = {
-  name: string;
-  enabled: boolean;
-  min: number;
-};
 
 const SHIPMESSAGE = "Available to ship: ";
 
@@ -42,28 +37,30 @@ const SIZES = [
   "58 ",
 ];
 
-let outputText: string;
+let outputText: string = "";
 
 const bikeRegexp = /Available Bikes:\s*(.*?)\s*(?=\n\n)/s;
 const totalRegexp = /After base discount:\s*\$\s*([\d,]+\.\d{2})/;
 const qtyRegexp = /Revised\/order: (\d*)/;
 
 function returnText(data: TTextSanitizerForm) {
-  const bikes = data.text.match(bikeRegexp)![1].split("\n");
-  const cleanLines = cleanBikeLines(bikes, data.removesize, data.removeyear);
+  const bikes = cleanBikeLines(
+    data.text.match(bikeRegexp)![1].split("\n"),
+    data.removesize,
+    data.removeyear
+  );
   const total = parseFloat(data.text.match(totalRegexp)![1].trim());
   const bikeQty = parseFloat(data.text.match(qtyRegexp)![1]);
   const termsMessage = determineTermsMessage(data, total);
   const freightEligible = determineFreight(data, bikeQty);
-  const text = formatOutputText(
-    cleanLines,
+  outputText = formatOutputText(
+    bikes,
     total,
     bikeQty,
     termsMessage,
     freightEligible
   );
-  outputText = text.join("\n");
-  return text.join("\n");
+  return outputText;
 }
 
 function formatOutputText(
@@ -87,7 +84,7 @@ function formatOutputText(
   const summaryLine = `${bikeQty} ${bikeQty >= 2 ? "pieces" : "piece"} for $${total} ${terms} ${freightEligible}`;
 
   textLines.push(summaryLine);
-  return textLines;
+  return textLines.join("\n");
 }
 
 function determineFreight(data: TTextSanitizerForm, qty: number) {

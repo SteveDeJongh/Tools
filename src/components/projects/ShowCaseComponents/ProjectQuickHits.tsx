@@ -1,4 +1,9 @@
-import { Card, CardGroup, Col, Row, Stack } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
+import Image from "react-bootstrap/Image";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Stack from "react-bootstrap/Stack";
 import { Project } from "../../../assets/projectDetails";
 import { Link } from "@tanstack/react-router";
 
@@ -54,6 +59,11 @@ function ProjectQuickHits({ project }: props) {
               </Card.Body>
             </Card>
           </CardGroup>
+        </Col>
+      </Row>
+      <Row className="mt-3 mb-3 justify-content-center">
+        <Col className="" md={10}>
+          <Image src={project.largeImg} fluid width={"100%"} height={"100%"} />
         </Col>
       </Row>
     </section>

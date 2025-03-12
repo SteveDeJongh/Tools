@@ -26,5 +26,11 @@ type TTextSanitizerForm = z.infer<typeof ZTextSanitizerForm>
 type TBikeTerms = z.infer<typeof ZBikeTerms>
 type TComponentTerms = z.infer<typeof ZComponentTerms>
 
+type PaymentTerm = {
+  name: string;
+  enabled: boolean;
+  min: number;
+};
 
-export { ZTextSanitizerForm, type TTextSanitizerForm, type TBikeTerms, type TComponentTerms }
+
+export { ZTextSanitizerForm, type TTextSanitizerForm, type TBikeTerms, type TComponentTerms, type PaymentTerm}

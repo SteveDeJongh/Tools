@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Button, Col, Row } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 const SKILLS = [
   {

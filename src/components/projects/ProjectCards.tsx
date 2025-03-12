@@ -55,7 +55,7 @@ const ProjectCards = () => {
                     </Card.Body>
                     <CardFooter>
                       <Link to={project.path}>
-                        <Button variant="primary">See the project</Button>
+                        <Button variant="primary">Project Details</Button>
                       </Link>
                     </CardFooter>
                   </Card>

@@ -1,4 +1,5 @@
-import { Col, Row } from "react-bootstrap";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import { Project } from "../../../assets/projectDetails";
 
 type props = {
@@ -30,6 +31,14 @@ function ProjectExplanation({ project }: props) {
           <p dangerouslySetInnerHTML={createMarkup(project.lessons)}></p>
         </Col>
       </Row>
+      {project.whatsNext ? (
+        <Row>
+          <Col>
+            <h3>What's next?</h3>
+            <p dangerouslySetInnerHTML={createMarkup(project.whatsNext)}></p>
+          </Col>
+        </Row>
+      ) : null}
     </section>
   );
 }
