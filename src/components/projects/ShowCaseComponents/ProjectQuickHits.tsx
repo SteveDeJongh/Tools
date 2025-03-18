@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 import { Project } from "../../../assets/projectDetails";
 import { Link } from "@tanstack/react-router";
+import "./QuickHits.css";
 
 type props = {
   project: Project;
@@ -30,15 +31,15 @@ function ProjectQuickHits({ project }: props) {
       <Row>
         <Col>
           <CardGroup>
-            <Card className="border-0">
-              <Card.Title>Type</Card.Title>
+            <Card id="" className="bg-bg border-0">
+              <Card.Title className="">Type</Card.Title>
               <Card.Body>
                 <Stack>
                   <div>{project.subTitle}</div>
                 </Stack>
               </Card.Body>
             </Card>
-            <Card className="border-0">
+            <Card id="inlineCard" className="bg-bg border-0">
               <Card.Title>Stack</Card.Title>
               <Card.Body>
                 <Stack>
@@ -48,7 +49,7 @@ function ProjectQuickHits({ project }: props) {
                 </Stack>
               </Card.Body>
             </Card>
-            <Card className="border-0">
+            <Card id="inlineCard" className="bg-bg border-0">
               <Card.Title>Live</Card.Title>
               <Card.Body>
                 <Stack>
@@ -63,7 +64,13 @@ function ProjectQuickHits({ project }: props) {
       </Row>
       <Row className="mt-3 mb-3 justify-content-center">
         <Col className="" md={10}>
-          <Image src={project.largeImg} fluid width={"100%"} height={"100%"} />
+          <Image
+            src={project.largeImg}
+            fluid
+            width={"100%"}
+            height={"100%"}
+            className="shadow"
+          />
         </Col>
       </Row>
     </section>

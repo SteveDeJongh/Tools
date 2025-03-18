@@ -1,8 +1,18 @@
-// change the theme
-// $theme-colors: (
-//   "primary": #0074d9,
-//   "danger": #ff4136,
-// );
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+
+$custom-colors: (
+  "bg": #BDC3C7,
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+$theme-colors: map-merge($theme-colors, (
+  primary: #2C3E50,
+  light: #95A5A6,
+  headings-color: #2C3E50,
+  link-color: #2C3E50
+));
 
 // Import Bootstrap and its default variables
 @import '../node_modules/bootstrap/scss/bootstrap.scss';

@@ -6,16 +6,16 @@ import Stack from "react-bootstrap/Stack";
 
 function Contact() {
   return (
-    <section id="contact" className="m-auto p-5 w-75">
+    <section id="contact" className="">
       <Row className="p-3">
         <Col>
-          <div className="rounded text left">
-            <h2>Get in touch</h2>
+          <div className="rounded text left bg-light">
+            <h2 className="p-3">Get In Touch</h2>
           </div>
         </Col>
       </Row>
 
-      <Row className="p-3">
+      <Row className="m-auto p-3 w-75">
         <Stack direction="horizontal">
           <a href="mailto:myEmail@gmail.com">
             <h4 className="pb-3">myEmail@gmail.com</h4>

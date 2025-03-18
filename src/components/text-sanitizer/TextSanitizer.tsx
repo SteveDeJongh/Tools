@@ -1,23 +1,19 @@
 import "./textSanitizer.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useForm } from "react-hook-form";
-import {
-  TBikeTerms,
-  TComponentTerms,
-  TTextSanitizerForm,
-  PaymentTerm,
-} from "./TextSanitizerTypes";
+import { useForm, UseFormRegister } from "react-hook-form";
+import { TTextSanitizerForm, PaymentTerm } from "./TextSanitizerTypes";
+import { useMemo } from "react";
 
-const SHIPMESSAGE = "Available to ship: ";
+const SHIP_MESSAGE = "Available to ship: ";
 
-const BIKETERMS: PaymentTerm[] = [
+const BIKE_TERMS: PaymentTerm[] = [
   { name: "N30", min: 0, enabled: true },
   { name: "30/60/90", min: 5000, enabled: true },
   { name: "Spring", min: 10000, enabled: false },
 ];
 
-const COMPONENTTERMS: PaymentTerm[] = [
+const COMPONENT_TERMS: PaymentTerm[] = [
   { name: "N30", min: 0, enabled: true },
   { name: "N60", min: 500, enabled: true },
   { name: "N90", min: 1000, enabled: true },
@@ -71,7 +67,7 @@ function formatOutputText(
   freightEligible: string
 ) {
   const textLines: string[] = [];
-  textLines.push(`${SHIPMESSAGE}\n`);
+  textLines.push(`${SHIP_MESSAGE}\n`);
 
   cleanLines.forEach((line: string, idx: number) => {
     if (idx === cleanLines.length - 1) {
@@ -98,24 +94,13 @@ function determineTermsMessage(data: TTextSanitizerForm, total: number) {
   let msg = "";
   const isbike = data.type === "bike";
   const sortedTerms = isbike
-    ? BIKETERMS.toSorted((a, b) => b.min - a.min)
-    : COMPONENTTERMS.toSorted((a, b) => b.min - a.min);
+    ? BIKE_TERMS.toSorted((a, b) => b.min - a.min)
+    : COMPONENT_TERMS.toSorted((a, b) => b.min - a.min);
 
   sortedTerms.some((term: PaymentTerm) => {
-    if (isbike) {
-      if (data["bikeTerms"][term.name as keyof TBikeTerms]) {
-        if (total >= term.min) {
-          msg = `on ${term.name} terms`;
-          return total >= term.min;
-        }
-      } else {
-        if (data["componentTerms"][term.name as keyof TComponentTerms]) {
-          if (total >= term.min) {
-            msg = `on ${term.name} terms`;
-            return total >= term.min;
-          }
-        }
-      }
+    if (total > term.min && data[term.name as keyof TTextSanitizerForm]) {
+      msg = `on ${term.name} terms`;
+      return true;
     }
   });
 
@@ -123,23 +108,56 @@ function determineTermsMessage(data: TTextSanitizerForm, total: number) {
 }
 
 function cleanBikeLines(lines: string[], size: boolean, year: boolean) {
+  const SIZE_REGEX = new RegExp(SIZES.join("|"));
+  const YEAR_REGEX = /\s20\d{2}/;
+
   return lines.map((line) => {
     let newLine = line.trim();
-    if (year) {
-      const yearRexp = /\s20\d{2}/;
-      newLine = newLine.replace(yearRexp, "");
-    }
-    if (size) {
-      const sizeRexp = new RegExp(SIZES.join("|"));
-      newLine = newLine.replace(sizeRexp, "");
-    }
-
+    if (year) newLine = newLine.replace(YEAR_REGEX, "");
+    if (size) newLine = newLine.replace(SIZE_REGEX, "");
     return newLine;
   });
 }
 
-function copyText() {
-  navigator.clipboard.writeText(outputText);
+async function copyText() {
+  try {
+    navigator.clipboard.writeText(outputText);
+  } catch (error) {
+    console.error("Failed to copy text: ", error);
+  }
+}
+
+function handleClearText() {
+  const textArea = document.getElementById("inputText") as HTMLTextAreaElement;
+  if (textArea) {
+    textArea.value = "";
+  }
+}
+
+type sgProps = {
+  terms: PaymentTerm[];
+  label: string;
+  register: UseFormRegister<TTextSanitizerForm>;
+};
+
+function SwitchGroup({ terms, label, register }: sgProps) {
+  return (
+    <>
+      <Form.Label className="">{label}:</Form.Label>
+      <div className="switch-container">
+        {terms.map((term) => (
+          <div key={`default-${term.name}`} className="mb-3">
+            <Form.Check
+              type="switch"
+              label={term.name}
+              defaultChecked={term.enabled}
+              {...register(term.name as keyof TTextSanitizerForm)}
+            />
+          </div>
+        ))}
+      </div>
+    </>
+  );
 }
 
 function TextSanitizer() {
@@ -150,7 +168,14 @@ function TextSanitizer() {
     watch,
   } = useForm<TTextSanitizerForm>();
 
-  const productSelection = watch("type", "bike");
+  const selectedProductType = watch("type", "bike");
+  const isBike = selectedProductType === "bike";
+  const shipmentTerms = useMemo(() => {
+    return isBike ? BIKE_TERMS : COMPONENT_TERMS;
+  }, [isBike]);
+  const shipmentLabel = isBike
+    ? "Bike Shipment Terms"
+    : "Component Shipment Terms";
 
   function onSubmit(data: TTextSanitizerForm) {
     const text = returnText(data);
@@ -163,56 +188,39 @@ function TextSanitizer() {
     <>
       <section className="text-sanitizer-tool">
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3" controlId="formTextInput">
+          <Form.Group className="mb-4" controlId="formTextInput">
             <Form.Label>
               <h2 className="pt-3">Mail Delivery Bikes Report Sanitizer</h2>
             </Form.Label>
             <Form.Text
               className="w-100"
-              style={{ height: "100px" }}
               as="textarea"
               placeholder="Input report here..."
               id="inputText"
+              style={{ height: "100px" }}
               {...register("text", {
                 required: "IConnect Report text is required",
               })}
             />
-            {/* Dear 
-
-            Available Bikes:
-
-              8 x  36e Tanuki MD MD 2023 Blue
-              6 x  36e Tanuki MD MD 2023 Blue
-              9 x  36e Tanuki SM SM 2023 Blue
-
-
-            Before discount: $ 11181.91
-            After base discount: $ 10175.54
-            Lines: 3
-            Revised/order: 23 / 17
-
-            Have a great day,
-
-            Your Kona team */}
-
             {errors.text && (
               <Form.Text className="text-danger">
                 {errors.text.message}
               </Form.Text>
             )}
             <Button
+              variant="secondary"
               type="button"
-              onClick={() => {
-                (
-                  document.getElementById("inputText") as HTMLInputElement
-                ).value = "";
-              }}
+              className="mt-2"
+              onClick={handleClearText}
             >
               Clear text
             </Button>
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Bike or Component Shipment?</Form.Label>
+
+          <Form.Group className="mb-4">
+            <Form.Label htmlFor="bike" className="d-block">
+              Bike or Component Shipment?
+            </Form.Label>
             <Form.Check
               type="radio"
               label="Bike"
@@ -229,45 +237,15 @@ function TextSanitizer() {
               {...register("type")}
             />
           </Form.Group>
-          <Form.Group className="mb-3">
-            {productSelection === "bike" ? (
-              <>
-                <Form.Label>Bike Shipment Terms</Form.Label>
-                <div className="switch-container">
-                  {BIKETERMS.map((term) => (
-                    <div key={`default-${term.name}`} className="mb-3">
-                      <Form.Check
-                        type={"switch"}
-                        label={term.name}
-                        defaultChecked={term.enabled}
-                        {...register(
-                          `bikeTerms.${term.name}` as keyof TTextSanitizerForm
-                        )}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <Form.Label>Component Shipment Terms</Form.Label>
-                <div className="switch-container">
-                  {COMPONENTTERMS.map((term) => (
-                    <div key={`default-${term.name}`} className="mb-3">
-                      <Form.Check
-                        type={"switch"}
-                        label={term.name}
-                        defaultChecked={term.enabled}
-                        {...register(
-                          `componentTerms.${term.name}` as keyof TTextSanitizerForm
-                        )}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+
+          <Form.Group className="mb-4">
+            <SwitchGroup
+              terms={shipmentTerms}
+              label={shipmentLabel}
+              register={register}
+            />
           </Form.Group>
+
           <Form.Group className="mb-5">
             <Form.Check
               type="checkbox"
@@ -275,34 +253,36 @@ function TextSanitizer() {
               label="Remove year?"
               defaultChecked={true}
               {...register("removeyear")}
-            ></Form.Check>
+            />
             <Form.Check
               type="checkbox"
               id="removesize"
               label="Remove double size?"
               defaultChecked={true}
-              disabled={productSelection === "component"}
+              disabled={selectedProductType === "component"}
               {...register("removesize")}
-            ></Form.Check>
+            />
             <Form.Check
               type="checkbox"
               id="checkFreight"
               label="Check Freight Eligibility?"
               defaultChecked={true}
-              disabled={productSelection === "component"}
+              disabled={selectedProductType === "component"}
               {...register("checkfreight")}
-            ></Form.Check>
+            />
           </Form.Group>
 
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" className="mb-3">
             Submit
           </Button>
         </Form>
 
-        <div className="result-div">
+        <div className="result-div mt-5">
           <h2>Results</h2>
-          <p id="results" className="container border"></p>
-          <Button onClick={() => copyText()}>Copy to Clipboard</Button>
+          <p id="results" className="container border p-3"></p>
+          <Button variant="secondary" onClick={() => copyText()}>
+            Copy to Clipboard
+          </Button>
         </div>
       </section>
     </>

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import { INFO } from "../about/me";
 
 const SKILLS = [
   {
@@ -32,9 +33,9 @@ function Skills() {
   return (
     <section id="Skills">
       <Row>
-        <Col>
-          <div className="bg-light m-3 pl-3 text-start text-dark rounded">
-            <h2>My Skills</h2>
+        <Col className="bg-light m-3 pl-3 text-start rounded">
+          <div className="">
+            <h2 className="p-3 mb-0">My Skills</h2>
           </div>
         </Col>
       </Row>
@@ -56,7 +57,9 @@ function Skills() {
                     return (
                       <p
                         key={skill}
-                        className={"bg-dark text-white py-1 px-1 m-1 rounded"}
+                        className={
+                          "bg-primary text-white py-1 px-1 m-1 rounded"
+                        }
                       >
                         {skill}
                       </p>
@@ -66,18 +69,8 @@ function Skills() {
               </Row>
               <Row>
                 <div className="container mt-3">
-                  <h4>Tinkerer at heart</h4>
-
-                  <p>
-                    Motivated professional transitioning from over a decade in
-                    the bike industry to software development, having
-                    successfully completed the Launch School curriculum. Skilled
-                    in object-oriented programming, problem-solving, and
-                    full-stack development, with hands-on experience building
-                    personal projects with today's technologies. I’m eager to
-                    apply my technical skills and a strong work ethic to
-                    contribute to innovative software solutions.
-                  </p>
+                  <h2>Tinkerer at heart</h2>
+                  <p>{INFO.introduction}</p>
 
                   <Link to="/about">
                     <Button>Learn More</Button>

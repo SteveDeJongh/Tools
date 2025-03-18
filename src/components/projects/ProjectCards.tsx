@@ -7,11 +7,11 @@ import { CardFooter, Col, Row } from "react-bootstrap";
 
 const ProjectCards = () => {
   return (
-    <section id="projects">
+    <section id="projects" className="">
       <Row>
         <Col>
-          <div className="bg-light m-3 pl-3 rounded text-left">
-            <h2>Projects</h2>
+          <div className="m-3 pl-3 bg-light rounded text-left">
+            <h2 className="p-3">Projects</h2>
           </div>
         </Col>
       </Row>
@@ -43,7 +43,7 @@ const ProjectCards = () => {
                             <span
                               key={tag}
                               className={
-                                "p-1 m-1 fs-xs bg-dark text-white rounded"
+                                "p-1 m-1 fs-xs bg-primary text-white rounded"
                               }
                             >
                               {tag}
